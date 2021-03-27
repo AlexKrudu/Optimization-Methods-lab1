@@ -13,7 +13,7 @@ int main() {
         return powl(log10l(x - 2), 2) + powl(log10l(10 - x), 2) - powl(x, (0.2));
     };
     std::function<long double(long double)> func1 = [](long double x) {
-        return powl(2, x) * sinl(100/x);
+        return sinl(x) * powl(x, 3);
     };
     auto dichotomy = dichotomy_method();
     auto golden_ratio = golden_ratio_method();
@@ -22,7 +22,7 @@ int main() {
     auto brent = brent_method();
 
 
-    auto brent_r = brent.optimize(func1, -3.0, -1.6, 1e-8);
+    auto brent_r = brent.optimize(func1, 4.0, 6.0, 0.000000000000000025);
     auto deh_r = dichotomy.optimize(func1, -3.0, -1.6, 1e-8);
     auto fibchi_r = fibonacci.optimize(func1, -3.0, -1.6, 1e-8);
     auto parabola_r = parabola.optimize(func1, -3.0, -1.6, 1e-8);

@@ -26,24 +26,26 @@ public:
                tolerance) {
             g = e;
             e = d;
+            bool accept_parabola = false;
             if (n_eq(x, w, tolerance) && n_eq(x, v, tolerance) && n_eq(v, w, tolerance) && n_eq(f_x, f_w, tolerance) &&
                 n_eq(f_x, f_v, tolerance) &&
                 n_eq(f_w, f_v, tolerance)) { // check if x, w, v and f_x, f_w, f_v are different
                 u = w - (((f_w - f_v) * powl((w - x), 2)) - ((f_w - f_x) * powl((w - v), 2))) /
                         (2 * (((w - x) * (f_w - f_v)) - ((w - v) * (f_w - f_x))));
-            }
-            if (u >= left_bound + tolerance && u <= right_bound - tolerance && std::abs(u - x) < g / 2) {
-                // accept u
-                d = std::abs(u - x);
-            } else {
-                if (x < left_bound + (right_bound - left_bound) / 2) {
-                    u = x + K * (right_bound - x);
-                    d = right_bound - x;
-                } else {
-                    u = x - K * (x - left_bound);
-                    d = x - left_bound;
+                if (u >= left_bound + tolerance && u <= right_bound - tolerance && std::abs(u - x) < g / 2) {
+                    accept_parabola = true;
                 }
             }
+             if (!accept_parabola) {
+                if (x < left_bound + (right_bound - left_bound) / 2) {
+                    u = x + K * (right_bound - x);
+                    e = right_bound - x;
+                } else {
+                    u = x - K * (x - left_bound);
+                    e = x - left_bound;
+                }
+            }
+            d = std::abs(u - x);
             f_u = target_func(u);
             if (f_u <= f_x) {
                 if (u >= x) {
