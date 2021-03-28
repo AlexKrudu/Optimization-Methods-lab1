@@ -10,6 +10,9 @@ public:
         return std::abs(rhs - lhs) > tolerance;
     }
 
+    static int sign(long double x) {
+        return (x > 0 ? 1 : x < 0 ? -1 : 0);
+    }
 
     result
     optimize(std::function<long double(long double)> target_func, long double left_bound, long double right_bound,
@@ -22,21 +25,20 @@ public:
         int count = 1;
         std::vector<iter_step> steps;
         steps.emplace_back(0, left_bound, right_bound, x, f_x);
-        while (right_bound - left_bound >=
-               tolerance) {
+        while (std::abs(x - (left_bound + right_bound) * 0.5l) + (right_bound - left_bound) * 0.5l >= 2 * tolerance) {
             g = e;
             e = d;
-            bool accept_parabola = false;
+            bool acc = false;
             if (n_eq(x, w, tolerance) && n_eq(x, v, tolerance) && n_eq(v, w, tolerance) && n_eq(f_x, f_w, tolerance) &&
                 n_eq(f_x, f_v, tolerance) &&
                 n_eq(f_w, f_v, tolerance)) { // check if x, w, v and f_x, f_w, f_v are different
                 u = w - (((f_w - f_v) * powl((w - x), 2)) - ((f_w - f_x) * powl((w - v), 2))) /
                         (2 * (((w - x) * (f_w - f_v)) - ((w - v) * (f_w - f_x))));
                 if (u >= left_bound + tolerance && u <= right_bound - tolerance && std::abs(u - x) < g / 2) {
-                    accept_parabola = true;
+                    acc = true;
                 }
             }
-             if (!accept_parabola) {
+            if (!acc) {
                 if (x < left_bound + (right_bound - left_bound) / 2) {
                     u = x + K * (right_bound - x);
                     e = right_bound - x;
@@ -45,8 +47,8 @@ public:
                     e = x - left_bound;
                 }
             }
-            d = std::abs(u - x);
             f_u = target_func(u);
+            d = std::abs(u - x);
             if (f_u <= f_x) {
                 if (u >= x) {
                     left_bound = x;

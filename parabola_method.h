@@ -1,6 +1,7 @@
 #pragma once
 
 #include "optimizing_method.h"
+#include "iostream"
 
 class parabola_method : optimizing_method {
     static int
@@ -12,6 +13,7 @@ public:
     result
     optimize(std::function<long double(long double)> target_func, long double left_bound, long double right_bound,
              long double tolerance) override {
+        int test;
         long double x1 = left_bound;
         long double x2 = (left_bound + right_bound) / 2;
         long double x3 = right_bound;
@@ -38,7 +40,6 @@ public:
         std::vector<iter_step> steps;
         steps.emplace_back(0, left_bound, right_bound, x1, f1, x2, f2);
         while (true) {
-            long double a0 = f1;
             long double a1 = (f2 - f1) / (x2 - x1);
             long double a2 = ((f3 - f1) / (x3 - x1) - (f2 - f1) / (x2 - x1)) / (x3 - x2);
             x_min_prev = x_min;
@@ -49,13 +50,13 @@ public:
             if (x1 < x_min && x_min < x2 && x2 < x3) {
                 // 1
                 if (f_min >= f2) {
-                    left_bound = x_min;
-                    right_bound = x3;
+                //    left_bound = x_min;
+                //    right_bound = x3;
                     x1 = x_min;
                     f1 = f_min;
                 } else {
-                    left_bound = x1;
-                    right_bound = x2;
+                //    left_bound = x1;
+                //    right_bound = x2;
                     x3 = x2;
                     f3 = f2;
                     x2 = x_min;
@@ -64,15 +65,15 @@ public:
             } else if (x1 < x2 && x2 < x_min && x_min < x3) {
                 // 2
                 if (f2 >= f_min) {
-                    left_bound = x2;
-                    right_bound = x3;
+               //     left_bound = x2;
+               //     right_bound = x3;
                     x1 = x2;
                     f1 = f2;
                     x2 = x_min;
                     f2 = f_min;
                 } else {
-                    left_bound = x1;
-                    right_bound = x_min;
+            //        left_bound = x1;
+             //       right_bound = x_min;
                     x3 = x_min;
                     f3 = f_min;
                 }
